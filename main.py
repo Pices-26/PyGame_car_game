@@ -6,6 +6,7 @@ pygame.init()
 display_width = 800
 display_height = 600
 
+pause = False
 
 black = (0,0,0)
 white = (200,255,255)
@@ -49,7 +50,23 @@ def text_objects(text, font):
     return textSurface, textSurface.get_rect()
 
 def crash():
-    message_display("You Crashed")
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+        # displaying start window
+        LargeText = pygame.font.Font('freesansbold.ttf', 100)
+        TextSurf, TextRect = text_objects('You Crashed', LargeText)
+        TextRect.center = ((display_width / 2), (display_height / 2))
+        gameDisplay.blit(TextSurf, TextRect)
+        # drawing boxes
+        pygame.draw.rect(gameDisplay, green, (150, 450, 100, 50))
+        pygame.draw.rect(gameDisplay, red, (550, 450, 100, 50))
+
+        # displaying text
+        button('Play Again', 150, 450, 150, 50, green, bright_green, game_loop)
+        button('QUIT', 550, 450, 100, 50, red, bright_red, quitgame)
 
 def button(msg,x,y,w,h,ic,ac, action=None):
     mouse = pygame.mouse.get_pos()
@@ -67,6 +84,29 @@ def button(msg,x,y,w,h,ic,ac, action=None):
     pygame.display.update()
     clock.tick(15)
 
+def unpause():
+    global pause
+    pause = False
+
+def paused():
+    LargeText = pygame.font.Font('freesansbold.ttf', 100)
+    TextSurf, TextRect = text_objects('Paused', LargeText)
+    TextRect.center = ((display_width / 2), (display_height / 2))
+    gameDisplay.blit(TextSurf, TextRect)
+
+    while pause:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
+                # drawing boxes
+        pygame.draw.rect(gameDisplay, green, (150, 450, 100, 50))
+        pygame.draw.rect(gameDisplay, red, (550, 450, 100, 50))
+
+        # displaying text
+        button('Continue', 150, 450, 150, 50, green, bright_green, unpause)
+        button('QUIT', 550, 450, 100, 50, red, bright_red, quitgame)
 
 
 ''' displaying the car '''
@@ -101,6 +141,7 @@ def intro_window():
 
 
 def game_loop():
+    global pause
     car_width = 100
     x = (display_width * .45)
     y = (display_height * 0.8)
@@ -124,9 +165,11 @@ def game_loop():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     x_change = -5
-                elif event.key == pygame.K_RIGHT:
+                if event.key == pygame.K_RIGHT:
                     x_change = 5
-
+                if event.key == pygame.K_p:
+                    pause = True
+                    paused()
             if event.type == pygame.KEYUP:
                 if event.key -- pygame.K_LEFT or event.key == pygame.K_RIGHT:
                     x_change = 0
