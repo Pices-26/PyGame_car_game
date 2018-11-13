@@ -21,6 +21,7 @@ gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('Wrum')
 clock = pygame.time.Clock()
 carImg = pygame.image.load('lambo.png')
+expl = pygame.image.load('flame.png')
 def things_dodged(count):
     font = pygame.font.SysFont(None, 25)
     text = font.render("dodged: " + str(count), True, red)
@@ -56,6 +57,7 @@ def crash():
                 pygame.quit()
                 quit()
         # displaying start window
+        gameDisplay.blit(expl, (0,300))
         LargeText = pygame.font.Font('freesansbold.ttf', 100)
         TextSurf, TextRect = text_objects('You Crashed', LargeText)
         TextRect.center = ((display_width / 2), (display_height / 2))
@@ -207,6 +209,7 @@ def game_loop():
 ''' calling functions'''
 
 carImg = pygame.transform.scale(carImg,(100,160))
+expl = pygame.transform.scale(expl,(1000, 800))
 intro_window()
 game_loop()
 quitgame()
