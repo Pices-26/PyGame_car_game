@@ -3,6 +3,9 @@ import time
 import random
 
 pygame.init()
+crash_sound = pygame.mixer.Sound('crash.wav')
+lambo_sound = pygame.mixer.music.load('lambo_sound.mp3')
+
 display_width = 800
 display_height = 600
 
@@ -22,6 +25,9 @@ pygame.display.set_caption('Wrum')
 clock = pygame.time.Clock()
 carImg = pygame.image.load('lambo.png')
 expl = pygame.image.load('flame.png')
+
+pygame.display.set_icon(carImg)
+
 def things_dodged(count):
     font = pygame.font.SysFont(None, 25)
     text = font.render("dodged: " + str(count), True, red)
@@ -51,6 +57,8 @@ def text_objects(text, font):
     return textSurface, textSurface.get_rect()
 
 def crash():
+    pygame.mixer.music.stop()
+    pygame.mixer.Sound.play(crash_sound)
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -88,15 +96,18 @@ def button(msg,x,y,w,h,ic,ac, action=None):
 
 def unpause():
     global pause
+    pygame.mixer.music.unpause()
     pause = False
 
-def paused():
+def paused():#
+    pygame.mixer.music.pause()
     LargeText = pygame.font.Font('freesansbold.ttf', 100)
     TextSurf, TextRect = text_objects('Paused', LargeText)
     TextRect.center = ((display_width / 2), (display_height / 2))
     gameDisplay.blit(TextSurf, TextRect)
 
     while pause:
+        pygame.mixer.music.pause()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -108,6 +119,7 @@ def paused():
 
         # displaying text
         button('Continue', 150, 450, 150, 50, green, bright_green, unpause)
+        pygame.mixer.Sound.stop()
         button('QUIT', 550, 450, 100, 50, red, bright_red, quitgame)
 
 
@@ -144,6 +156,7 @@ def intro_window():
 
 def game_loop():
     global pause
+    pygame.mixer.music.play(1, 0.05)
     car_width = 100
     x = (display_width * .45)
     y = (display_height * 0.8)
